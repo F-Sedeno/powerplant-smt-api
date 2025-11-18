@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -20,7 +21,7 @@ app.add_exception_handler(ApiException, api_exception_handler)
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request, exc: Exception):
-    return JSONResponse(
+    json_exc = JSONResponse(
         status_code=500,
         content={
             "status_code": 500,
@@ -28,6 +29,8 @@ async def generic_exception_handler(request, exc: Exception):
             "detail": str(exc)
         },
     )
+    logging.error(f"Unhandled Exception: {exc}", exc_info=True, extra=json_exc)
+    return json_exc
 
 api_router = APIRouter(prefix=prefix)
 

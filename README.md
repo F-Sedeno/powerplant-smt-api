@@ -33,5 +33,6 @@ docker run --name powerplant-smt-api -p 8888:8888 powerplant-smt-api
 
 ## Usage
 
-Send a POST request to `/productionplan` with your power plant configuration to receive the optimal production plan.
+Send a POST request to `localhost:8888/productionplan` with your power plant configuration to receive the optimal production plan.
 
+Acess `localhost:8888/docs` to see OpenApi 3.1 specification of the endpoints with body examples and return types

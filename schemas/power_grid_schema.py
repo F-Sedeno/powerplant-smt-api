@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+from schemas.examples import POST_PRODUCTIONPLAN_EXAMPLE
 from schemas.power_plant_schema import PowerPlantSchema
 
 class FuelSchema(BaseModel):
@@ -10,7 +11,7 @@ class FuelSchema(BaseModel):
     windturbine: float = Field(validation_alias="wind(%)")
 
 class PowerGridSchema(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, json_schema_extra=POST_PRODUCTIONPLAN_EXAMPLE)
     load: float
     fuels: FuelSchema
     powerplants: list[PowerPlantSchema]

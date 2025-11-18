@@ -1,8 +1,6 @@
-from http.client import HTTPException
 from exceptions.unfeasible_exception import UnfeasibleException
 from schemas.power_grid_schema import PowerGridSchema
 import math
-
 
 class PlantService():
     
@@ -58,6 +56,7 @@ class PlantService():
 
         #For each powerplant, calculate possible productions
         for index, powerplant in enumerate(powerplants_greedy):
+
             unit_cost = PlantService._get_unit_cost(powerplant, power_grid.fuels)
 
             # If wind turbine, pmax depends on wind
@@ -103,19 +102,18 @@ class PlantService():
         if LOAD not in production_costs:
             raise UnfeasibleException("No feasible solution for the requested load.")
 
-        # Reconstruct allocation by backtracking through prevs
+        # reconstruct allocation by backtracking through prevs
         alloc = [0] * n
         acc_load = LOAD
         for i in range(n - 1, -1, -1):
             stopping_point = prevs[i][acc_load]
             units_produced = acc_load - stopping_point
             if stopping_point is INF:
-                # Defensive: should not happen if dp[D] != INF, but guard anyway
                 stopping_point = 0
             alloc[i] = units_produced
             acc_load -= units_produced
 
-        # Convert allocations back to MW and produce result list
+        # convert allocations back to MW and produce result list
         result = []
         for fac, mw_units in zip(powerplants_greedy, alloc):
             result.append({"name": fac.name, "p": round(mw_units * granularity, 1)})

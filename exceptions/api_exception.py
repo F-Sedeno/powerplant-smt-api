@@ -1,3 +1,4 @@
+import logging
 from fastapi.responses import JSONResponse
 
 class ApiException(Exception):
@@ -10,7 +11,7 @@ class ApiException(Exception):
         return f"ApiException(status_code={self.status_code}, detail={self.detail})"
 
 async def api_exception_handler(request, exc: ApiException):
-    return JSONResponse(
+    json_exc= JSONResponse(
         status_code=exc.status_code,
         content={
             "status_code": exc.status_code,
@@ -18,3 +19,5 @@ async def api_exception_handler(request, exc: ApiException):
             "detail": exc.detail
         },
     )
+    logging.error(f"API Exception: {exc}", exc_info=True, extra=json_exc)
+    return json_exc
