@@ -19,5 +19,5 @@ async def api_exception_handler(request, exc: ApiException):
             "detail": exc.detail
         },
     )
-    logging.error(f"API Exception: {exc}", exc_info=True, extra=json_exc)
+    logging.error(f"API Exception: {exc}", exc_info=True)
     return json_exc

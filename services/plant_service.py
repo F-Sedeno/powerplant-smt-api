@@ -90,7 +90,10 @@ class PlantService():
                         new_production = production + max_prod_units
                     else:
                         new_production = stopping_point
-                    cost = math.floor(production_costs[production] + (new_production-production) * unit_cost)
+                    
+                    if unit_cost == INF:
+                        continue
+                    cost = production_costs[production] + (new_production-production) * unit_cost
                     if new_production not in production_costs or cost < production_costs[new_production]:
                         new_production_costs[new_production] = cost
                         prev[new_production] = production
