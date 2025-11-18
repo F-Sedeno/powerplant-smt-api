@@ -9,8 +9,6 @@ class PlantService():
         if plant.type == "windturbine":
             return 0.0
         fuel_price = getattr(fuels, plant.type)
-        if plant.efficiency == 0:
-            return float("inf")
         
         fuel_total_cost = fuel_price / plant.efficiency
         if plant.type == "gasfired":
@@ -36,21 +34,24 @@ class PlantService():
         return significant_production_steps
 
     @staticmethod
+    def _sort_powerplants_by_cost(power_grid: PowerGridSchema):
+        return [powerplant for powerplant in sorted(
+            power_grid.powerplants,
+            key=lambda p: PlantService._get_unit_cost(p, power_grid.fuels)
+        )]
+
+    @staticmethod
     def simple_production_plan(power_grid: PowerGridSchema):
 
         granularity = 0.1  
         LOAD = int(round(power_grid.load / granularity))
         n = len(power_grid.powerplants)
 
-        INF = float("inf")
         production_costs = {0: 0}
 
         prevs = [] # list of dicts to reconstruct allocation
 
-        powerplants_greedy = [powerplant for powerplant in sorted(
-            power_grid.powerplants,
-            key=lambda p: PlantService._get_unit_cost(p, power_grid.fuels)
-        )]
+        powerplants_greedy = PlantService()._sort_powerplants_by_cost(power_grid)
 
         significant_production_steps = PlantService()._get_significant_production_steps(powerplants_greedy, granularity)
 
@@ -90,9 +91,7 @@ class PlantService():
                         new_production = production + max_prod_units
                     else:
                         new_production = stopping_point
-                    
-                    if unit_cost == INF:
-                        continue
+
                     cost = production_costs[production] + (new_production-production) * unit_cost
                     if new_production not in production_costs or cost < production_costs[new_production]:
                         new_production_costs[new_production] = cost
@@ -111,14 +110,13 @@ class PlantService():
         for i in range(n - 1, -1, -1):
             stopping_point = prevs[i][acc_load]
             units_produced = acc_load - stopping_point
-            if stopping_point is INF:
-                stopping_point = 0
             alloc[i] = units_produced
             acc_load -= units_produced
 
         # convert allocations back to MW and produce result list
         result = []
         for fac, mw_units in zip(powerplants_greedy, alloc):
-            result.append({"name": fac.name, "p": round(mw_units * granularity, 1)})
+            production =round(mw_units * granularity, 1)
+            result.append({"name": fac.name, "p": production})
 
         return result

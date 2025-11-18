@@ -35,4 +35,39 @@ docker run --name powerplant-smt-api -p 8888:8888 powerplant-smt-api
 
 Send a POST request to `localhost:8888/productionplan` with your power plant configuration to receive the optimal production plan.
 
-Acess `localhost:8888/docs` to see OpenApi 3.1 specification of the endpoints with body examples and return types
+Access `localhost:8888/docs` to see OpenAPI 3.1 specification of the endpoints with body examples and return types
+
+## Testing
+
+A comprehensive test suite is included covering unit tests and integration tests.
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage report
+pytest --cov=. --cov-report=html
+
+# Run only unit tests
+pytest -m unit
+
+# Run only integration tests
+pytest -m integration
+
+# Run specific test file
+pytest tests/test_plant_service.py
+```
+
+For detailed test documentation, see [tests/README.md](tests/README.md)
+
+### Test Coverage
+
+The test suite includes:
+- **Unit Tests**: 20+ tests for the PlantService optimization algorithm
+- **Integration Tests**: 25+ tests for the /productionplan endpoint
+- **Edge Cases**: Comprehensive boundary condition testing
+- **Validation**: Input validation and error handling tests
+
+Current coverage target: **80%+**
