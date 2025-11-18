@@ -28,7 +28,7 @@ Build and run the Docker container for automatic deployment:
 docker build -t powerplant-smt-api .
 
 # Run the container
-docker run -p 8888:8888 powerplant-smt-api
+docker run --name powerplant-smt-api -p 8888:8888 powerplant-smt-api
 ```
 
 ## Usage

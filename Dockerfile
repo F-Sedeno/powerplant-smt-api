@@ -6,7 +6,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+COPY app-entrypoint.sh /app/app-entrypoint.sh
+RUN chmod +x /app/app-entrypoint.sh
 
 EXPOSE 8888
 
-CMD ["app-entrypoint.sh"]
+ENTRYPOINT ["python", "main.py"]
